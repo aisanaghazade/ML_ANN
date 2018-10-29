@@ -1,7 +1,7 @@
 import fnmatch
 import os
 import HOG
-import HTPNN
+import ChiSquare
 import numpy as np
 import pandas as pd
 import cv2
@@ -11,8 +11,8 @@ import math
 
 img_infos = {}
 ref_imgs = []
-img = cv2.imread('test.JPG')
-treshhold = 0
+img = cv2.imread('faces94/female/9336923/9336923.1.jpg')
+treshhold = 0.1
 x = 0
 classes = {}
 print(1)
@@ -41,7 +41,7 @@ for i in range (0, len(ref_imgs)):
         if i == j:
             distance.append(0)
         else:
-            distance.append(HTPNN.htpnn(ref_imgs[i], ref_imgs[j]))
+            distance.append(ChiSquare.distance_computation( ref_imgs[i], ref_imgs[j]))
     distance_matrix.append(distance)
 
 np.savetxt("distances.csv", distance_matrix, delimiter=",")

@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 def HOG(filename):
     img = cv2.cvtColor(cv2.imread(filename),
                        cv2.COLOR_BGR2GRAY)
+    print(len(img))
+    print(len(img[0]))
     cell_size = (8, 8)  # h x w in pixels
     block_size = (2, 2)  # h x w in cells
     nbins = 9  # number of orientation bins
@@ -46,9 +48,12 @@ def HOG(filename):
 
     # Average gradients
     gradients /= cell_count
+    print(len(gradients))
+    print(len(gradients[0]))
+    print(len(gradients[0][0]))
     return gradients
 
-
+HOG('test.JPG')
 # # Preview
 # img = cv2.cvtColor(cv2.imread('test.jpg'),
 #                        cv2.COLOR_BGR2GRAY)
