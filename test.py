@@ -3,7 +3,7 @@ import cv2
 import ChiSquare
 
 pixels1 = cv2.imread('faces94/female/9336923/9336923.1.jpg')
-pixels2 = cv2.imread('faces94/female/9336923/9336923.2.jpg')
+pixels2 = cv2.imread('faces94/female/9338535/9338535.1.jpg')
 # max = 255
 # min = 0
 # histo = np.zeros(max + 1)

@@ -11,7 +11,8 @@ import math
 
 img_infos = {}
 ref_imgs = []
-img = cv2.imread('faces94/female/9336923/9336923.1.jpg')
+img = HOG.HOG('faces94/test/asamma.20.jpg')
+
 treshhold = 0.1
 x = 0
 classes = {}
@@ -50,21 +51,25 @@ np.savetxt("distances.csv", distance_matrix, delimiter=",")
 print(3)
 queue = []
 itr = 0
-queue.append(random.randint(0,len(distance_matrix)))
-min_dist = HTPNN.htpnn(ref_imgs[queue[0]], img)
+queue.append(40)
+min_dist = ChiSquare.distance_computation(ref_imgs[queue[0]], img)
 nearest = queue[0]
 R = list(range(0, len(distance_matrix)))
+x = 0
 del(R[nearest])
 print(4)
 while True:
     print(5)
     distances = []
     for i in range(0, len(queue)):
-        distance = HTPNN.htpnn(ref_imgs[queue[i]], img)
+        x += 1
+        distance = ChiSquare.distance_computation(ref_imgs[queue[i]], img)
         distances.append(distance)
         if distance <= treshhold:
+            print("distance:"+ str(distance))
             print(img_infos[queue[i]])
             sys.exit()
+
 
         if distance < min_dist:
             min_dist = distance
