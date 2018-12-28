@@ -6,12 +6,14 @@ import numpy as np
 import pandas as pd
 import cv2
 import sys
+import K_means as K
 import random
 import math
+import time
 
 img_infos = {}
 ref_imgs = []
-img = HOG.HOG('faces94/test/asamma.20.jpg')
+img = HOG.HOG('test/asamma.20.jpg')
 
 treshhold = 0.1
 x = 0
@@ -28,15 +30,16 @@ for dirpath, dirs, files in os.walk('faces94'):
                 classes[str(filename.split('.')[0])] += 1.0
             else:
                 classes[str(filename.split('.')[0])] = 1.0
+    print(dirpath)
 for Class in classes:
     if classes[Class] == 0:
         print(Class)
     classes[Class] /= len(ref_imgs)
 
-
 print(2)
 distance_matrix = []
 for i in range (0, len(ref_imgs)):
+    t1 = time.time()
     distance = []
     for j in range (0, len(ref_imgs)):
         if i == j:
@@ -44,6 +47,8 @@ for i in range (0, len(ref_imgs)):
         else:
             distance.append(ChiSquare.distance_computation( ref_imgs[i], ref_imgs[j]))
     distance_matrix.append(distance)
+    print(img_infos[i])
+    print(time.time() - t1)
 
 np.savetxt("distances.csv", distance_matrix, delimiter=",")
 
@@ -51,13 +56,16 @@ np.savetxt("distances.csv", distance_matrix, delimiter=",")
 print(3)
 queue = []
 itr = 0
-queue.append(40)
+
+queue.append(0)
 min_dist = ChiSquare.distance_computation(ref_imgs[queue[0]], img)
 nearest = queue[0]
 R = list(range(0, len(distance_matrix)))
 x = 0
 del(R[nearest])
 print(4)
+
+t = time.time()
 while True:
     print(5)
     distances = []
@@ -68,6 +76,7 @@ while True:
         if distance <= treshhold:
             print("distance:"+ str(distance))
             print(img_infos[queue[i]])
+            print(time.time() - t)
             sys.exit()
 
 
@@ -78,6 +87,7 @@ while True:
     if itr > 100:
         print(queue)
         print("The nearest class is: "+ img_infos[nearest])
+        print(time.time() - t)
         sys.exit()
 
     itr += 1
@@ -99,5 +109,5 @@ while True:
             min = likelihood
             argument = i
 
-    queue.append(R[i])
-    del(R[i])
+    queue.append(R[argument])
+    del(R[argument])
