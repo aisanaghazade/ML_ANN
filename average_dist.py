@@ -24,18 +24,23 @@ for i in range(0, NC):
     distances[str(i)] = []
 
 #reading files
-for dirpath, dirs, files in os.walk('faces94'):
-    for filename in fnmatch.filter(files, '*.jpg'):
-        with open(os.path.join(dirpath, filename)):
-            img_infos[x] = str(filename.split('.')[0])
-            x += 1
-            # ref_imgs.append(cv2.imread(os.path.join(dirpath, filename)))
-            ref_imgs.append(HOG.HOG(os.path.join(dirpath, filename)))
-            if str(filename.split('.')[0]) in classes:
-                classes[str(filename.split('.')[0])] += 1.0
-            else:
-                classes[str(filename.split('.')[0])] = 1.0
-    print(dirpath)
+files2 = pd.read_csv("./files2.csv")
+files2 = np.array(files2)
+print(files2)
+for f in files2:
+    # for dirpath, dirs, files in os.walk(f[1]):
+    #     for filename in fnmatch.filter(files, '*.jpg'):
+    #         with open(os.path.join(dirpath, filename)):
+
+    #     print(dirpath)
+    img_infos[x] = str(f[1].split('.')[0])
+    x += 1
+    # ref_imgs.append(cv2.imread(os.path.join(dirpath, filename)))
+    ref_imgs.append(HOG.HOG("./"+f[1]+'.jpg'))
+    if str(f[1].split('.')[0]) in classes:
+        classes[str(f[1].split('.')[0])] += 1.0
+    else:
+        classes[str(f[1].split('.')[0])] = 1.0
 
 print(len(ref_imgs))
 
@@ -157,12 +162,18 @@ while True:
             for i in range(0, len(clusters[str(j)])):
                 # print(8)
                 likelihood = 0
-                for r_i in range(0, len(queues[str(j)])):
-                    # print(queue[r_i])
-                    # print(R[i])
-                    fi = ((distances[str(j)][r_i] - distance_matrix[queues[str(j)][r_i]][clusters[str(j)][i]]) ** 2) / \
-                         distance_matrix[queues[str(j)][r_i]][clusters[str(j)][i]]
-                    likelihood += fi
+                for r_j in range(0, len(clusters)):
+                    for r_i in range(0, len(queues[str(r_j)])):
+                        # print(distances)
+                        # print(clusters)
+                        # print(r_i)
+                        # print(r_j)
+                        # print(queues)
+                        # print(len(distance_matrix))
+                        # print(len(distance_matrix[0]))
+                        fi = ((distances[str(r_j)][r_i] - distance_matrix[queues[str(r_j)][r_i]][clusters[str(j)][i]]) ** 2) / \
+                             distance_matrix[queues[str(r_j)][r_i]][clusters[str(j)][i]]
+                        likelihood += fi
                 p = classes[img_infos[clusters[str(j)][i]]]
                 # print(p)
                 likelihood = likelihood - math.log(p)

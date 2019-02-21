@@ -3,6 +3,10 @@ import cv2
 import matplotlib.pyplot as plt
 
 def HOG(filename):
+    print(filename)
+    print()
+    print()
+    print()
     img = cv2.cvtColor(cv2.imread(filename),
                        cv2.COLOR_BGR2GRAY)
     cell_size = (8, 8)  # h x w in pixels

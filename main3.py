@@ -12,7 +12,7 @@ import pandas as pd
 img_infos = {} #the owner of each image
 ref_imgs = []
 img = HOG.HOG('test/asamma.20.jpg') #input image
-NC = 2 #number of clusters
+NC = 2#number of clusters
 treshhold = 0.09
 x = 0 #this variable is used in probability of each class
 weights = np.zeros(NC) #weights for each cluster
@@ -36,9 +36,6 @@ for dirpath, dirs, files in os.walk('faces94'):
             else:
                 classes[str(filename.split('.')[0])] = 1.0
     print(dirpath)
-
-print(len(ref_imgs))
-
 for Class in classes:
     if classes[Class] == 0:
         print(Class)
@@ -47,8 +44,8 @@ for Class in classes:
 clusters, centroids = K.KMeans_clustering(ref_imgs, NC,  img_infos) #clustering reference images by K-Means algorithm
 print(2)
 
-# #calculating distances between reference images
-# distance_matrix = []
+#calculating distances between reference images
+distance_matrix = []
 # for i in range (0, len(ref_imgs)):
 #     t1 = time.time()
 #     distance = []
@@ -65,11 +62,10 @@ print(2)
 
 # distance_matrix = pd.read_csv("distances.csv")
 # distance_matrix = np.array(distance_matrix)
-distance_matrix = np.genfromtxt('distances.csv', delimiter=',')
-print(distance_matrix)
+distance_matrix = np.genfromtxt('distances.csv', delimiter = ',')
 print(3)
 queues = {}
-
+queue = []
 for i in range(0, NC):
     queues[str(i)] = []
 
@@ -77,6 +73,7 @@ itr = 0 #iterations
 
 for i in range(0, NC):
     queues[str(i)].append(centroids[i])
+    queue.append(centroids[i])
     clusters[str(i)].remove(centroids[i])
 
 nearest = queues[str(0)][0]
@@ -101,7 +98,7 @@ weights = CDistances/(max_dist)
 weights = np.power(weights, -1)
 for i in range(0, len(weights)):
     weights[i] = math.ceil(weights[i])
-print(weights)
+
 
 
 
@@ -114,6 +111,7 @@ isEmpty = False
 
 
 while True:
+    print(weights)
     print(5)
 
 
@@ -151,18 +149,26 @@ while True:
     print(7)
     isEmpty = True
     for j in range(0, len(clusters)):
+        # if(weights[j] <= 1):
+        #     continue
         for w in range(0, math.ceil(weights[j])*math.ceil(weights[j])):
             argument = 0
             min = sys.maxsize
             for i in range(0, len(clusters[str(j)])):
                 # print(8)
                 likelihood = 0
-                for r_i in range(0, len(queues[str(j)])):
-                    # print(queue[r_i])
-                    # print(R[i])
-                    fi = ((distances[str(j)][r_i] - distance_matrix[queues[str(j)][r_i]][clusters[str(j)][i]]) ** 2) / \
-                         distance_matrix[queues[str(j)][r_i]][clusters[str(j)][i]]
-                    likelihood += fi
+
+                for r_j in range(0, len(clusters)):
+                    for r_i in range(0, len(queues[str(r_j)])):
+                        print(distances)
+                        print(r_i)
+                        print(r_j)
+                        print(queues)
+                        print(len(distance_matrix))
+                        print(len(distance_matrix[0]))
+                        fi = ((distances[str(r_j)][r_i] - distance_matrix[queues[str(r_j)][r_i]][clusters[str(r_j)][i]]) ** 2) / \
+                             distance_matrix[queues[str(r_j)][r_i]][clusters[str(r_j)][i]]
+                        likelihood += fi
                 p = classes[img_infos[clusters[str(j)][i]]]
                 # print(p)
                 likelihood = likelihood - math.log(p)
@@ -178,18 +184,19 @@ while True:
                 CDistances[j] += distance
                 distances[str(j)].append(distance)
                 queues[str(j)].append(clusters[str(j)][argument])
+                queue.append(clusters[str(j)][argument])
                 del (clusters[str(j)][argument])
                 isEmpty = False
 
-    max_dist = 0
-    avg_distances = []
-    for i in range(0, len(CDistances)):
-        avg_distances.append(CDistances[i]/len(queues[str(i)]))
-        if avg_distances[i] >= max_dist:
-            max_dist = avg_distances[i]
+    # max_dist = 0
+    # avg_distances = []
+    # for i in range(0, len(CDistances)):
+    #     avg_distances.append(CDistances[i]/len(queues[str(i)]))
+    #     if avg_distances[i] >= max_dist:
+    #         max_dist = avg_distances[i]
 
-    weights = avg_distances / (max_dist)
-    weights = np.power(weights, -1)
-    for i in range(0, len(weights)):
-        weights[i] = math.ceil(weights[i])
+    # weights = avg_distances / (max_dist)
+    # weights = np.power(weights, -1)
+    # for i in range(0, len(weights)):
+    #     weights[i] = math.ceil(weights[i])
 
