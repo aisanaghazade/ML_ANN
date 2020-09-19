@@ -2,6 +2,8 @@ import ChiSquare
 import random
 from sklearn.cluster import KMeans
 
+# this file has to function for clustering. we use the second one.
+
 def KMeans_clustering1(train, NC, iter, info):#NC = Number of Clusters, i = max_iteration
     iteration = 0
     centroids = random.sample(range(0, len(train)), NC)
@@ -88,11 +90,6 @@ def KMeans_clustering1(train, NC, iter, info):#NC = Number of Clusters, i = max_
                 for k in range(0, len(clusters[str(i)])):
                     current_cost += ChiSquare.distance_computation(train[clusters[str(i)][j]], train[clusters[str(i)][k]])
 
-
-        # if current_cost > prev_cost:
-        #     print(current_cost)
-        #     print(prev_cost)
-        #     break
 
         prev_cost = current_cost
 
