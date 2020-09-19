@@ -53,16 +53,3 @@ def HOG(filename):
     return gradients
 
 HOG('test.JPG')
-# # Preview
-# img = cv2.cvtColor(cv2.imread('test.jpg'),
-#                        cv2.COLOR_BGR2GRAY)
-# plt.figure()
-# plt.imshow(img, cmap='gray')
-# plt.show()
-#
-# bin = 5  # angle is 360 / nbins * direction
-# plt.pcolor(HOG('test.jpg')[:, :, bin])
-# plt.gca().invert_yaxis()
-# plt.gca().set_aspect('equal', adjustable='box')
-# plt.colorbar()
-# plt.show()
